@@ -1,4 +1,6 @@
-# Dockerfile
+# Tensorflow with extra packages
+
+## Dockerfile
 
 ```dockerfile
 FROM gcr.io/tensorflow/tensorflow:latest-devel
@@ -39,16 +41,30 @@ docker build -t adsantos/tensorflow-model:0.1 -t adsantos/tensorflow-model:lates
 docker build -t adsantos/tensorflow:0.1 -t adsantos/tensorflow:latest-devel .
 
 
-# Running image
+## Running image
 
 ```bash
 docker run -it -p 6006:6006 -p 8888:8888 -v $PWD/my-samples:/models/research/object_detection/my-samples adsantos/tensorflow:latest-devel
 
 ```
 
-## Testing
+### Testing
 
-```
+#### setup-extras.sh
+
+```bash
+git clone https://github.com/cocodataset/cocoapi.git models/research/object_detection/cocoapi
+
+cd /models/research/object_detection/cocoapi/PythonAPI
+
+make
+
+cp -r pycocotools /models/research
+
+cd /models/research
+
+protoc object_detection/protos/*.proto --python_out=.
+
 export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 
 python object_detection/builders/model_builder_test.py
@@ -58,8 +74,22 @@ cd object_detection/
 jupyter notebook --no-browser --allow-root
 ```
 
-## Runnig notebook
-jupyter notebook --no-browser --allow-root
+./setup-extras.sh
 
-## Open notebook
-open object_detection_video.ipynb
+cd object_detection/cocoapi/PythonAPI
+
+protoc object_detection/protos/*.proto --python_out=.
+
+cd /models/research/
+
+export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
+
+python object_detection/builders/model_builder_test.py
+
+cd object_detection/
+
+jupyter notebook --no-browser --allow-root
+```
+
+## Open notebook on a browser
+open my-notebooks/object_detection_video.ipynb
