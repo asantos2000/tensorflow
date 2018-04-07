@@ -6,8 +6,6 @@ FROM gcr.io/tensorflow/tensorflow:latest-devel
 # Comment
 RUN echo 'building...'
 
-RUN git clone https://github.com/tensorflow/models.git /models
-
 WORKDIR /models/research/
 
 # Make sure you grab the latest version
